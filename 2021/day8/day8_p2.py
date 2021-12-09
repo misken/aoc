@@ -121,14 +121,7 @@ def translate_readout(readout):
 
 if __name__ == '__main__':
     run()
-    output = decode_signal('ab', {'d': 'a', 'e': 'b',
-                                  'a': 'c',
-                                  'f': 'd',
-                                  'g': 'e',
-                                  'b': 'f',
-                                  'c': 'g'})
-    #print(output)
-
+    
 
 
 
