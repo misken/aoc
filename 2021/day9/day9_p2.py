@@ -78,22 +78,16 @@ def find_basins(_heights, _low_points, nrows, ncols):
                     if _heights[i, j] > _heights[check[0], check[1]]:
                         new_basin.add(a)
                         to_check.add(a)
-                        
+
         # Found basin around this low point
         basins[pt] = new_basin
 
     return basins
 
 
-
-
-
-
-
 with open(data_file, 'r') as file_input:
     lines = [line.strip() for line in file_input.readlines()]
     heights = np.array([[int(t) for t in line] for line in lines])
-    #print(heights)
     nrows = heights.shape[0]
     ncols = heights.shape[1]
 
