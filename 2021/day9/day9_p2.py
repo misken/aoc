@@ -2,7 +2,7 @@
 import numpy as np
 from pprint import pprint
 
-test = True
+test = False
 
 if test:
     data_file = 'data/example.txt'
@@ -10,36 +10,17 @@ else:
     data_file = 'data/input.txt'
 
 
-def adjacent(i, j, nrows, ncols):
+def adjacent(i, j):
+    """Assumes matrix is padded with 9's all around"""
 
     adj = []
-    if i == 0:
-        up = None
-        down = (i + 1, j)
-        adj.append(down)
-    elif i == nrows - 1:
-        down = None
-        up = (i - 1, j)
-        adj.append(up)
-    else:
-        up = i - 1, j
-        down = i + 1, j
-        adj.append(down)
-        adj.append(up)
 
-    if j == 0:
-        left = None
-        right = i, j + 1
-        adj.append(right)
-    elif j == ncols - 1:
-        right = None
-        left = i, j - 1
-        adj.append(left)
-    else:
-        left = i, j - 1
-        right = i, j + 1
-        adj.append(right)
-        adj.append(left)
+    up = i - 1, j
+    down = i + 1, j
+    left = i, j - 1
+    right = i, j + 1
+
+    adj.extend([up, down, left, right])
 
     return adj
 
@@ -49,57 +30,63 @@ def find_low_points(heights):
     nrows = heights.shape[0]
     ncols = heights.shape[1]
 
-    low_points = []
-    for i in range(nrows):
-        for j in range(ncols):
-            adj = adjacent(i, j, nrows, ncols)
+    _low_points = []
+    for i in range(1, nrows - 1):
+        for j in range(1, ncols - 1):
+            adj = adjacent(i, j)
             if sum([heights[i, j] >= heights[a[0], a[1]] for a in adj]) == 0:
-                low_points.append((i, j))
+                _low_points.append((i, j))
 
-    return low_points
+    return _low_points
 
 
-def find_basins(_heights, _low_points, nrows, ncols):
+def find_basins(_heights, _low_points):
 
-    basins = {}
+    _basins = {}
 
     for pt in _low_points:
-        new_basin = set([pt])
+        new_basin = {pt}
         to_check = new_basin.copy()
 
         while len(to_check) > 0:
-            check = to_check.pop()
-            adj = set(adjacent(check[0], check[1], nrows, ncols))
-            for a in adj:
-                # Check if a is part of the basin
-                i, j = a[0], a[1]
+            x, y = to_check.pop()
+            adj = set(adjacent(x, y))
+            for (i, j) in adj:
                 # Can't be in basin if height is 9
                 if _heights[i, j] < 9:
-                    if _heights[i, j] > _heights[check[0], check[1]]:
-                        new_basin.add(a)
-                        to_check.add(a)
+                    # Is neighbor higher than x, y?
+                    if _heights[i, j] > _heights[x, y]:
+                        new_basin.add((i, j))
+                        to_check.add((i, j))
 
         # Found basin around this low point
-        basins[pt] = new_basin
+        _basins[pt] = new_basin
 
-    return basins
+    return _basins
 
 
 with open(data_file, 'r') as file_input:
-    lines = [line.strip() for line in file_input.readlines()]
-    heights = np.array([[int(t) for t in line] for line in lines])
-    nrows = heights.shape[0]
-    ncols = heights.shape[1]
 
+    # Read array of heights
+    heights = np.array(np.genfromtxt(data_file, delimiter=1))
+
+    # Pad the array with 9's to make edge cases easier
+    heights = np.pad(heights, 1, 'constant', constant_values=9)
+    #print(heights)
+
+    # Find the low points and compute risk level (Part 1)
     low_points = find_low_points(heights)
-    print(low_points)
-    basins = find_basins(heights, low_points, nrows, ncols)
+    total_risk = sum([heights[a, b] + 1 for (a, b) in low_points])
+    print(f'total risk: {total_risk} (Part 1)')
+
+    # Find the basin around each low point
+    basins = find_basins(heights, low_points)
     basin_sizes = [len(v) for k, v in basins.items()]
     basin_sizes.sort(reverse=True)
-    pprint(basins)
-    print(basin_sizes)
+    # pprint(basins)
+    # print(basin_sizes)
     print(basin_sizes[0], basin_sizes[1], basin_sizes[2])
-    print(basin_sizes[0] * basin_sizes[1] * basin_sizes[2])
+    print(f'Part 2: {basin_sizes[0] * basin_sizes[1] * basin_sizes[2]}')
 
 
 
