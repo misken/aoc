@@ -39,7 +39,7 @@ for line in lines:
                 break  # Stop reading this line
             else:
                 # remove last item from list
-                chars = chars[:-1]
+                chars.pop()
         else:
             print(f'illegal char {c}')
             print(f'{line_num}: {line}')
@@ -50,7 +50,7 @@ for line in lines:
         completers = []
         while len(chars) > 0:
             completers.append(which_closer[chars[-1]])
-            chars = chars[:-1]
+            chars.pop()
 
         completers_list.append(completers)
 
