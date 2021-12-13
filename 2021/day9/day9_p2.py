@@ -2,7 +2,7 @@
 import numpy as np
 from pprint import pprint
 
-test = False
+test = True
 
 if test:
     data_file = 'data/example.txt'
@@ -87,6 +87,22 @@ with open(data_file, 'r') as file_input:
     # print(basin_sizes)
     print(basin_sizes[0], basin_sizes[1], basin_sizes[2])
     print(f'Part 2: {basin_sizes[0] * basin_sizes[1] * basin_sizes[2]}')
+
+    # Alternative approach
+    # https://www.reddit.com/r/adventofcode/comments/rcjgu6/despite_having_used_python_for_years_today_was/
+
+    # Create boolean matrix where True means it's a local minimum
+    minima = ((heights < np.roll(heights, 1, 0)) &
+              (heights < np.roll(heights, -1, 0)) &
+              (heights < np.roll(heights, 1, 1)) &
+              (heights < np.roll(heights, -1, -1)))
+
+    print(minima)
+
+    # Extract the values using the boolean matrix from heights
+    values = np.extract(minima, heights)
+    print(sum([v + 1 for v in values]))
+
 
 
 
