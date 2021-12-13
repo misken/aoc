@@ -1,4 +1,4 @@
-# Day 12: Passage pathing  - Problem 1
+# Day 12: Passage pathing  - Problem 2
 import numpy as np
 from collections import Counter
 import networkx as nx

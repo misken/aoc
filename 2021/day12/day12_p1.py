@@ -3,6 +3,9 @@ import numpy as np
 from collections import Counter
 import networkx as nx
 
+"""
+Do a depth first search and don't allow multiple visits to small caves (keep track with Counter).
+"""
 test = False
 test_size = 'mini'
 test_size = 'middle'
