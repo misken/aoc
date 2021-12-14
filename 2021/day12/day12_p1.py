@@ -6,7 +6,7 @@ import networkx as nx
 """
 Do a depth first search and don't allow multiple visits to small caves (keep track with Counter).
 """
-test = False
+test = True
 test_size = 'mini'
 test_size = 'middle'
 test_size = 'larger'
@@ -23,17 +23,10 @@ with open(data_file, 'r') as file_input:
 
 
 G = nx.Graph()
-small_caves = set()
-
 for edge in edges:
     node1, node2 = edge[0], edge[1]
     G.add_edge(node1, node2)
-    for node in node1, node2:
-        if node.islower():
-            small_caves.add(node)
-
 print(G)
-print(small_caves)
 
 # Try to find paths
 # Initialize partial paths to explore
