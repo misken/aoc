@@ -8,7 +8,7 @@ Hex codes - for part 1, if we can find all the packets and keep track of their v
 we are done. Don't need to parse the literal values. Just find the packets.
 """
 
-test = True
+test = False
 mini = False
 
 if test:
@@ -38,7 +38,7 @@ def len_of_n_subpackets(packets, n):
         pos += 6
 
 
-def process_packet_tree(G, packet, packet_num, pos, type1hunting=0):
+def process_packet_tree(G, packet, pos, type1hunting=0):
     """
     Not sure if this will be called once or used somewhat recursively
 
@@ -61,6 +61,7 @@ def process_packet_tree(G, packet, packet_num, pos, type1hunting=0):
             break
 
         version_num, type_num = get_version_type(packet, pos)
+        print(f'version_num {version_num}, type_num {type_num}')
         pos += 6
 
         if type_num == 4:
@@ -73,12 +74,11 @@ def process_packet_tree(G, packet, packet_num, pos, type1hunting=0):
                 if chunk[0] == '0':
                     leading_0 = True
                 pos += 5
-            pos += 1
-            print(f'literal_bin {literal_bin} --> {int(literal_bin, 2)}')
 
-            G.add_node(packet_num + 1, type_num=type_num, version_num=version_num, pos=pos)
-            G.add_edge(packet_num, packet_num + 1)
-            packet_num += 1
+            print(f'literal_bin {literal_bin} --> {int(literal_bin, 2)}')
+            packet_num = G.number_of_nodes() + 1
+            G.add_node(packet_num, type_num=type_num, version_num=version_num, pos=pos)
+            G.add_edge(packet_num - 1, packet_num)
             num_packets_found += 1
             # Check if this literal has trailing zeroes
             print(pos)
@@ -98,13 +98,13 @@ def process_packet_tree(G, packet, packet_num, pos, type1hunting=0):
                 packet_start = pos
                 packet_end = packet_start + len_subpackets
                 new_packets = packet[packet_start:packet_end]
-
-                G.add_node(packet_num + 1, type_num=type_num, version_num=version_num, pos=pos)
-                G.add_edge(packet_num, packet_num + 1)
-                packet_num += 1
+                print(new_packets)
+                packet_num = G.number_of_nodes() + 1
+                G.add_node(packet_num, type_num=type_num, version_num=version_num, pos=pos)
+                G.add_edge(packet_num - 1 , packet_num)
                 num_packets_found += 1
 
-                process_packet_tree(G, new_packets, packet_num, 0)
+                G = process_packet_tree(G, new_packets, 0)
                 pos += len_subpackets
                 print(packet[pos:])
 
@@ -113,9 +113,9 @@ def process_packet_tree(G, packet, packet_num, pos, type1hunting=0):
                 num_subpackets = int(packet[pos:pos+11], 2)
                 pos += 11
                 print(packet[pos:])
-                G.add_node(packet_num + 1, type_num=type_num, version_num=version_num, pos=pos)
+                packet_num = G.number_of_nodes() + 1
+                G.add_node(packet_num, type_num=type_num, version_num=version_num, pos=pos)
                 #G.add_edge(packet_num, packet_num + 1)
-                packet_num += 1
                 num_packets_found += 1
 
                 # For part 1, let's just ignore this type and plunge forward
@@ -123,7 +123,7 @@ def process_packet_tree(G, packet, packet_num, pos, type1hunting=0):
                 # all packets eventually
                 #pos = process_packet_tree(G, packet, packet_num, pos)
 
-    return pos
+    return G
 
 with open(data_file, 'r') as file_input:
 
@@ -131,19 +131,23 @@ with open(data_file, 'r') as file_input:
     print(f'{len(hex_packets)} packets')
     for hp in hex_packets:
         bin_packet = ''.join([format(int(s, 16), '04b') for s in hp])
+        print(hp)
         print(bin_packet)
         pos = 0
         packet_num = 0
 
         G = nx.DiGraph()
         # Add root node
+        packet_num = G.number_of_nodes() + 1
         G.add_node(packet_num, type_num=0, version_num=0, pos=0)
-        process_packet_tree(G, bin_packet, packet_num, pos)
+        G = process_packet_tree(G, bin_packet, pos)
 
 
         version = nx.get_node_attributes(G, 'version_num')
         tot_version = sum([v for k, v in version.items()])
         print(tot_version)
+        for k, v in version.items():
+            print(f'node {k}, version_num {v}')
 
 
 
