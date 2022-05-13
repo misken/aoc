@@ -1,26 +1,17 @@
 # Day 16: Chiton  - Problem 2
 import numpy as np
-from collections import Counter
-import networkx as nx
+import networx as nx
 import matplotlib.pyplot as plt
 
 """
-Hex codes - for part 1, if we can find all the packets and keep track of their version numbers,
-we are done. Don't need to parse the literal values. Just find the packets.
 
-Now for part 2, we need to deal with the type 1 operators and build the tree to be able to
-traverse it and do the math
 """
 
 test = False
 mini = False
 
 if test:
-    if not mini:
-        data_file = f'data/example2.txt'
-    else:
-        data_file = f'data/mini_example.txt'
-
+    data_file = f'data/example.txt'
 else:
     data_file = 'data/input.txt'
 
