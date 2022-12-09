@@ -1,4 +1,4 @@
-# Day 7 - Problem 1
+# Day 7 - Problem 2
 
 from pathlib import Path
 import time
@@ -15,33 +15,11 @@ def dir_size(dir, tree):
 
 def main(test=False):
 
+    disk_size = 70000000
+    space_for_update = 30000000
+
     if test:
         data_file = Path('data/input_test.txt')
-
-        test_str = """
-            $ cd /
-            $ ls
-            dir a
-            14848514 b.txt
-            8504156 c.dat
-            dir d
-            $ cd a
-            $ ls
-            dir e
-            29116 f
-            2557 g
-            62596 h.lst
-            $ cd e
-            $ ls
-            584 i
-            $ cd ..
-            $ cd ..
-            $ cd d
-            $ ls
-            4060174 j
-            8033020 d.log
-            5626152 d.ext
-            7214296 k"""
     else:
         data_file = Path('data/input.txt')
 
@@ -49,14 +27,10 @@ def main(test=False):
         # Read commands into a list
         cmds = [c.rstrip() for c in f_in.readlines()]
 
-    # Process one command at a time
     cwd = ''
-    # cpath = '' # Keep track of path from root to cwd
-    # level = 0
-
     dirs = ['/']
 
-    # Use list of dicts to hold file tree. Level is list index
+    # Use a dict to hold file tree.
     ftree = {'/': {'type': 'dir', 'parent': None, 'size': 0, 'level': 0}}
     for cmd in cmds:
         cmd_details = cmd.split()
@@ -86,7 +60,6 @@ def main(test=False):
 
     # Work from terminal nodes up
     levels = [ftree[d]['level'] for d in dirs]
-
     dirs.sort(key=lambda d: d.count('&'), reverse=True)
 
     if test:
@@ -97,12 +70,20 @@ def main(test=False):
         ftree[d]['size'] = dir_size(d, ftree)
 
 # if val['size'] <= 100000
-    dir_sizes = [(key, val['size']) for key, val in ftree.items() if val['type'] == 'dir' if val['size'] <= 100000]
+    dir_sizes = [(key, val['size']) for key, val in ftree.items() if val['type'] == 'dir']
+    dir_sizes.sort(key=lambda d: d[1])
 
-    tot_size = sum([d[1] for d in dir_sizes])
+    tot_size = ftree['/']['size']
 
-    print(dir_sizes)
-    print(f'Part 1 (tot_size): {tot_size}')
+    if test:
+        print(dir_sizes)
+
+    print(f'tot_size: {tot_size}')
+    print(f'unused space: {disk_size - tot_size}')
+    for d, size in dir_sizes:
+        if disk_size - tot_size + size >= space_for_update:
+            print(f'Part 2: {d} {size}')
+            break
 
 
 if __name__ == '__main__':

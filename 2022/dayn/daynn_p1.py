@@ -1,4 +1,4 @@
-# Day n - Problem 1
+# Day n: - Problem 1
 
 from pathlib import Path
 import time
@@ -16,7 +16,7 @@ def main(test=False):
 
 
 if __name__ == '__main__':
-    test = False
+    test = True
     t1 = time.perf_counter()
     main(test)
     t2 = time.perf_counter()

@@ -8,12 +8,11 @@ import math
 Trajectory problem
 """
 
-
-
 test = True
 
 if test:
     data_file = f'data/example.txt'
+    data_file = f'data/example_00.txt'
 else:
     data_file = 'data/input.txt'
 
@@ -22,9 +21,10 @@ def add_sf(_sf1, _sf2):
     return f'[{sf1},{sf2}]'
 
 
-def pair_magnitude(pair_tuple):
+def regular_pair_magnitude(pair_tuple):
 
     return 3 * pair_tuple[0] + 2 * pair_tuple[1]
+
 
 def exploder(_sf_sum, test=False):
 
@@ -201,7 +201,7 @@ with open(data_file, 'r') as file_input:
         all_pairs_tuple = [(int(e1), int(e2)) for e1, e2 in all_pairs]
         print(all_pairs_tuple)
 
-        all_pair_magnitudes = [pair_magnitude(t) for t in all_pairs_tuple]
+        all_pair_magnitudes = [regular_pair_magnitude(t) for t in all_pairs_tuple]
         print(all_pair_magnitudes)
 
         # Find all the left regular numbers

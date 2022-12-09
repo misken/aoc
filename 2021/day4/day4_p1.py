@@ -5,7 +5,7 @@ test = False
 if test:
     data_file = 'data/input_test_p1.txt'
 else:
-    data_file = 'data/input_p1.txt'
+    data_file = 'data/input.txt'
 
 # Method 1 - list of lists
 
