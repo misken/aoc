@@ -2,9 +2,24 @@
 
 from pathlib import Path
 import time
-import numpy as np
+import queue
 
 
+"""
+Monkey 0:
+  Starting items: 79, 98
+  Operation: new = old * 19
+  Test: divisible by 23
+    If true: throw to monkey 2
+    If false: throw to monkey 3
+
+Monkey 1:
+  Starting items: 54, 65, 75, 74
+  Operation: new = old + 6
+  Test: divisible by 19
+    If true: throw to monkey 2
+    If false: throw to monkey 0
+"""
 def main(test=False):
 
     if test:
@@ -12,50 +27,36 @@ def main(test=False):
     else:
         data_file = Path('data/input.txt')
 
+    num_rounds = 1
+
     with open(data_file, 'r') as f_in:
-        forest_rows = [row.rstrip() for row in f_in.readlines()]
-        forest = [[int(c) for c in row] for row in forest_rows]
+        monkey_blocks = [block.split('\n') for block in f_in.read().split('\n\n')]
+        monkey_blocks = [[line.strip().split(':') for line in b] for b in monkey_blocks]
 
-        forest = np.array(forest)
-
-    print(forest.shape)
     if test:
-        print(forest)
+        print(monkey_blocks)
 
-    num_rows = forest.shape[0]
-    num_cols = forest.shape[1]
+    item_queues = []
+    tossed_item_queues = {} # Key will be monkey, value will be list of items
+    for round in range(num_rounds):
+        for turn in monkey_blocks:
+            # for step in turn:
+            monkey_id = int(turn[0][0].split()[1])
+            items_str = turn[1][1].split(',')
+            items = [int(s.strip()) for s in items_str]
+            q = queue.Queue()
+            for item in items:
+                q.put(item)
 
-    num_visible_interior = 0
-    for r in range(1, num_rows - 1):
-        for c in range(1, num_cols - 1):
-            visible = 0
-            # look left
-            if max(forest[r, 0:c]) < forest[r, c]:
-                visible += 1
-            # look right
-            if max(forest[r, c+1:]) < forest[r, c]:
-                visible += 1
-            # look up
-            if max(forest[0:r, c]) < forest[r, c]:
-                visible += 1
-            # look down
-            if max(forest[r+1:, c]) < forest[r, c]:
-                visible += 1
+    for round in range(num_rounds):
 
-            if test:
-                print(f'r{r}c{c} visible={visible}')
 
-            if visible > 0:
-                num_visible_interior += 1
 
-    num_visible_exterior = num_cols * 2 + (num_rows - 2) * 2
-
-    num_visible = num_visible_exterior + num_visible_interior
-    print(f'Part 1 (num_visible): {num_visible_exterior}+{num_visible_interior}={num_visible}')
+    #print(f'Part 1 (num_visible): {num_visible_exterior}+{num_visible_interior}={num_visible}')
 
 
 if __name__ == '__main__':
-    test = False
+    test = True
     t1 = time.perf_counter()
     main(test)
     t2 = time.perf_counter()
