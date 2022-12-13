@@ -36,7 +36,7 @@ def main(test=False):
     else:
         data_file = Path('data/input.txt')
 
-    num_rounds = 20
+    num_rounds = 1
     inspections = []
 
     with open(data_file, 'r') as f_in:
@@ -48,12 +48,12 @@ def main(test=False):
 
     item_queues = []
     op_test = []
-    tossed_item_queues = {} # Key will be monkey, value will be list of items
+    inspection_counts = []
 
     # Start by making pass to fill current items possessed by each monkey
 
     for turn in monkey_blocks:
-        # for step in turn:
+        inspection_counts.append(0)
         monkey_id = int(turn[0][0].split()[1])
         items_str = turn[1][1].split(',')
         items = [int(s.strip()) for s in items_str]
@@ -88,25 +88,27 @@ def main(test=False):
 
     # Now let's play the rounds
     for round in range(num_rounds):
+        #print(f'round {round}')
         for monkey in range(len(monkey_blocks)):
             # Monkey worry level escalation
             ot = op_test[monkey]
             item_idx = 0
             items = item_queues[monkey].copy()
             for item in items:
-                inspections.append(monkey)
+                inspection_counts[monkey] += 1
                 worry_level = item
                 if ot['op'] == '+':
                     worry_level += ot['op_val']
                 elif ot['op'] == '*':
                     worry_level *= ot['op_val']
                 elif ot['op'] == '^':
+                    #continue
                     worry_level = worry_level ** ot['op_val']
                 else:
                     raise ValueError
 
                 # My worry level de-escalation
-                worry_level = worry_level // 3
+                # worry_level = worry_level // 3
 
                 # Check divisibility
                 is_divisible = (worry_level % ot['test_div']) == 0
@@ -119,22 +121,18 @@ def main(test=False):
                     throw_to = ot['false_throw']
 
                 item_queues = throw(item_queues, monkey, item_idx, throw_to, worry_level)
-
+                #print(item_queues)
                 #item_idx += 1
 
-    print(item_queues)
-    icounter = Counter(inspections)
-    print(icounter)
-    print(icounter.most_common(2))
-    top2 = [j for i, j in icounter.most_common(2)]
-    print(top2[0] * top2[1])
+    #print(item_queues)
+    print(inspection_counts)
 
 
     #print(f'Part 1 (num_visible): {num_visible_exterior}+{num_visible_interior}={num_visible}')
 
 
 if __name__ == '__main__':
-    test = False
+    test = True
     t1 = time.perf_counter()
     main(test)
     t2 = time.perf_counter()
