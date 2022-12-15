@@ -21,12 +21,54 @@ Monkey 1:
     If false: throw to monkey 0
 """
 
-def throw(item_queues, from_monkey, item_idx, to_monkey, new_worry_level):
+def throw(item_queues, from_monkey, to_monkey, new_worry_level):
 
-    thrown_item = item_queues[from_monkey].pop(item_idx)
+    thrown_item = item_queues[from_monkey].pop(0)
     item_queues[to_monkey].append(new_worry_level)
     return item_queues
 
+
+def get_new_worry_level(old_worry_level, operation, operand, divisor, escalate):
+
+    if escalate:
+        if operation == '+':
+            temporary_worry_level = old_worry_level + operand
+            remainder = temporary_worry_level % divisor
+            is_divisible = remainder == 0
+            if is_divisible:
+                worry_level = temporary_worry_level
+                #worry_level = operand * old_worry_level
+            else:
+                worry_level = temporary_worry_level
+        elif operation == '*':
+            temporary_worry_level = old_worry_level * operand
+            remainder = temporary_worry_level % divisor
+            is_divisible = remainder == 0
+            if is_divisible:
+                worry_level = operand * divisor
+                #worry_level = operand * old_worry_level
+            else:
+                worry_level = temporary_worry_level
+        elif operation == '^':
+            temporary_worry_level = old_worry_level ** 2
+            remainder = temporary_worry_level % divisor
+            is_divisible = remainder == 0
+            if is_divisible:
+                #worry_level = divisor * old_worry_level
+                #worry_level = divisor ** 2
+                #second_factor = temporary_worry_level
+                worry_level = divisor
+                #worry_level = old_worry_level ** 2
+            else:
+                worry_level = temporary_worry_level
+        else:
+            raise ValueError
+    else:
+        worry_level = old_worry_level
+        remainder = worry_level % divisor
+        is_divisible = remainder == 0
+
+    return worry_level, is_divisible
 
 
 def main(test=False):
@@ -36,7 +78,8 @@ def main(test=False):
     else:
         data_file = Path('data/input.txt')
 
-    num_rounds = 1
+    num_rounds = 1000
+    worry_escalation = True
     inspections = []
 
     with open(data_file, 'r') as f_in:
@@ -97,21 +140,27 @@ def main(test=False):
             for item in items:
                 inspection_counts[monkey] += 1
                 worry_level = item
-                if ot['op'] == '+':
-                    worry_level += ot['op_val']
-                elif ot['op'] == '*':
-                    worry_level *= ot['op_val']
-                elif ot['op'] == '^':
-                    #continue
-                    worry_level = worry_level ** ot['op_val']
-                else:
-                    raise ValueError
+
+                new_worry_level, is_divisible = get_new_worry_level(worry_level,
+                                                                    ot['op'], ot['op_val'],
+                                                                    ot['test_div'], worry_escalation)
+                # if ot['op'] == '+':
+                #     worry_level += ot['op_val']
+                # elif ot['op'] == '*':
+                #     worry_level *= ot['op_val']
+                # elif ot['op'] == '^':
+                #     #continue
+                #     #worry_level = worry_level ** ot['op_val']
+                #     worry_level *= 1
+                # else:
+                #     raise ValueError
 
                 # My worry level de-escalation
                 # worry_level = worry_level // 3
 
                 # Check divisibility
-                is_divisible = (worry_level % ot['test_div']) == 0
+                #remainder = worry_level % ot['test_div']
+                # is_divisible = remainder == 0
 
                 if is_divisible:
                     # Throw to True monkey
@@ -120,9 +169,9 @@ def main(test=False):
                     # Throw to False monkey
                     throw_to = ot['false_throw']
 
-                item_queues = throw(item_queues, monkey, item_idx, throw_to, worry_level)
+                item_queues = throw(item_queues, monkey, throw_to, new_worry_level)
                 #print(item_queues)
-                #item_idx += 1
+
 
     #print(item_queues)
     print(inspection_counts)
