@@ -25,7 +25,7 @@ with open(data_file, 'r') as file_input:
             x2 = int(line_match.group(3))
             y2 = int(line_match.group(4))
 
-            print(f'({x1}, {y1})({x2}, {y2})')
+            #print(f'({x1}, {y1})({x2}, {y2})')
 
             # Check if horizontal or vertical
             if x1 == x2 or y1 == y2:

@@ -14,6 +14,9 @@ test = True
 
 if test:
     data_file = f'data/example.txt'
+    #data_file = f'data/simple_1.txt'
+    #data_file = f'data/simple_2.txt'
+    data_file = f'data/simple_3.txt'
 else:
     data_file = 'data/input.txt'
 
@@ -193,34 +196,34 @@ with open(data_file, 'r') as file_input:
 
         print(sf_sum)
 
-        # Find all the pairs
-        pair_pattern = r'\[(\d+),(\d+)\]'
-        all_pairs = re.findall(pair_pattern, sf_sum)
-        print(all_pairs)
-
-        all_pairs_tuple = [(int(e1), int(e2)) for e1, e2 in all_pairs]
-        print(all_pairs_tuple)
-
-        all_pair_magnitudes = [pair_magnitude(t) for t in all_pairs_tuple]
-        print(all_pair_magnitudes)
-
-        # Find all the left regular numbers
-        left_regular = r'\[(\d+),\['
-        all_left_regular = re.findall(left_regular, sf_sum)
-        print(all_left_regular)
-
-        left_regular = [int(e1) for e1 in all_left_regular]
-        print(left_regular)
-
-        right_regular = r'],(\d+)\]'
-        all_right_regular = re.findall(right_regular, sf_sum)
-        print(all_right_regular)
-
-        right_regular = [int(e1) for e1 in all_right_regular]
-        print(right_regular)
-
-        final_sum = sum(all_pair_magnitudes) + sum(left_regular) + sum(right_regular)
-        print(final_sum)
+        # # Find all the pairs
+        # pair_pattern = r'\[(\d+),(\d+)\]'
+        # all_pairs = re.findall(pair_pattern, sf_sum)
+        # print(all_pairs)
+        #
+        # all_pairs_tuple = [(int(e1), int(e2)) for e1, e2 in all_pairs]
+        # print(all_pairs_tuple)
+        #
+        # all_pair_magnitudes = [pair_magnitude(t) for t in all_pairs_tuple]
+        # print(all_pair_magnitudes)
+        #
+        # # Find all the left regular numbers
+        # left_regular = r'\[(\d+),\['
+        # all_left_regular = re.findall(left_regular, sf_sum)
+        # print(all_left_regular)
+        #
+        # left_regular = [int(e1) for e1 in all_left_regular]
+        # print(left_regular)
+        #
+        # right_regular = r'],(\d+)\]'
+        # all_right_regular = re.findall(right_regular, sf_sum)
+        # print(all_right_regular)
+        #
+        # right_regular = [int(e1) for e1 in all_right_regular]
+        # print(right_regular)
+        #
+        # final_sum = sum(all_pair_magnitudes) + sum(left_regular) + sum(right_regular)
+        # print(final_sum)
 
 
 
