@@ -8,15 +8,12 @@ import math
 Trajectory problem
 """
 
-
-
 test = True
 
 if test:
-    data_file = f'data/example.txt'
-    #data_file = f'data/simple_1.txt'
-    #data_file = f'data/simple_2.txt'
-    data_file = f'data/simple_3.txt'
+
+    data_file = f'data/example_00.txt'
+
 else:
     data_file = 'data/input.txt'
 
@@ -25,9 +22,10 @@ def add_sf(_sf1, _sf2):
     return f'[{sf1},{sf2}]'
 
 
-def pair_magnitude(pair_tuple):
+def regular_pair_magnitude(pair_tuple):
 
     return 3 * pair_tuple[0] + 2 * pair_tuple[1]
+
 
 def exploder(_sf_sum, test=False):
 
@@ -196,6 +194,7 @@ with open(data_file, 'r') as file_input:
 
         print(sf_sum)
 
+
         # # Find all the pairs
         # pair_pattern = r'\[(\d+),(\d+)\]'
         # all_pairs = re.findall(pair_pattern, sf_sum)
@@ -224,6 +223,7 @@ with open(data_file, 'r') as file_input:
         #
         # final_sum = sum(all_pair_magnitudes) + sum(left_regular) + sum(right_regular)
         # print(final_sum)
+
 
 
 
