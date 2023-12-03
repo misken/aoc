@@ -1,5 +1,7 @@
 # Day 3 - Problem 2
 
+# See https://github.com/st3fan/aoc/blob/master/2023/py/day3.py for a nice solution
+
 import re
 import numpy as np
 import math
@@ -27,55 +29,9 @@ else:
     data_file = 'data/input.txt'
 
 
-def is_position_symbol_adjacent(schematic, row, col):
-    if schematic[row - 1, col - 1] not in NONSYMBOL:
-        return True
-    if schematic[row - 1, col] not in NONSYMBOL:
-        return True
-    if schematic[row - 1, col + 1] not in NONSYMBOL:
-        return True
-    if schematic[row, col - 1] not in NONSYMBOL:
-        return True
-    if schematic[row, col + 1] not in NONSYMBOL:
-        return True
-    if schematic[row + 1, col] not in NONSYMBOL:
-        return True
-    if schematic[row + 1, col - 1] not in NONSYMBOL:
-        return True
-    if schematic[row + 1, col + 1] not in NONSYMBOL:
-        return True
-
-    return False
-
-
 def is_position_star_adjacent(schematic, row, col):
-    star_positions = []
-    if schematic[row - 1, col - 1] == '*':
-        star_positions.append((row - 1, col - 1))
-    if schematic[row - 1, col] == '*':
-        star_positions.append((row - 1, col))
-    if schematic[row - 1, col + 1] == '*':
-        star_positions.append((row - 1, col + 1))
-    if schematic[row, col - 1] == '*':
-        star_positions.append((row, col - 1))
-    if schematic[row, col + 1] == '*':
-        star_positions.append((row, col + 1))
-    if schematic[row + 1, col] == '*':
-        star_positions.append((row + 1, col))
-    if schematic[row + 1, col - 1] == '*':
-        star_positions.append((row + 1, col - 1))
-    if schematic[row + 1, col + 1] == '*':
-        star_positions.append((row + 1, col + 1))
-
+    star_positions = [(x, y) for x in [row - 1, row, row + 1] for y in [col - 1, col, col + 1] if schematic[x, y] == '*']
     return star_positions
-
-
-def is_number_symbol_adjacent(schematic, row, col_start, col_end):
-    for j in range(col_start, col_end):
-        if is_position_symbol_adjacent(schematic, row, j):
-            return True
-
-    return False
 
 
 def is_number_star_adjacent(schematic, row, col_start, col_end):
