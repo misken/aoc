@@ -17,14 +17,15 @@ def parse_card(card):
     sections = card.split(':')
     numbers = sections[1].split('|')
     card_num = int(sections[0].split()[1])
-    winning_numbers = numbers[0].split()
-    your_numbers = numbers[1].split()
+    winning_numbers = set(numbers[0].split())
+    your_numbers = set(numbers[1].split())
     return card_num, winning_numbers, your_numbers
 
 
 def count_matches(winning, your):
 
-    num_matches = sum([int(w == y) for w in winning for y in your])
+    # num_matches = sum([int(w == y) for w in winning for y in your])
+    num_matches = len(winning & your)
     return num_matches
 
 
@@ -54,15 +55,11 @@ def day4_p2(data):
     for card in card_lines:
         card_num, winning_numbers, your_numbers = parse_card(card)
         num_matches = count_matches(winning_numbers, your_numbers)
-
         # Increment number of cards for card_num+1:card_num+num_matches+1
-        num_copies = card_counts[card_num]
-
         for cnum in range(card_num+1, card_num+num_matches+1):
-            card_counts[cnum] += num_copies
+            card_counts[cnum] += card_counts[card_num]
 
-    total_cards = card_counts.total()
-    print(f'Part 2: Total cards = {total_cards}')
+    print(f'Part 2: Total cards = {card_counts.total()}')
 
 
 def main():
