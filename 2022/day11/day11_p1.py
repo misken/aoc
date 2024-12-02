@@ -1,4 +1,4 @@
-# Day 8: Treetop Tree House - Problem 1
+# Day 11: Monkey in the Middle - Problem 1
 
 from pathlib import Path
 import time
@@ -19,6 +19,20 @@ Monkey 1:
   Test: divisible by 19
     If true: throw to monkey 2
     If false: throw to monkey 0
+
+Monkey 2:
+  Starting items: 79, 60, 97
+  Operation: new = old * old
+  Test: divisible by 13
+    If true: throw to monkey 1
+    If false: throw to monkey 3
+
+Monkey 3:
+  Starting items: 74
+  Operation: new = old + 3
+  Test: divisible by 17
+    If true: throw to monkey 0
+    If false: throw to monkey 1
 """
 
 def throw(item_queues, from_monkey, item_idx, to_monkey, new_worry_level):
@@ -69,8 +83,8 @@ def main(test=False):
             op, op_val = operation[3], int(operation[4])
         op_test_dict = {'mid': monkey_id, 'op': op, 'op_val': op_val}
 
-        test = turn[3][1].split()
-        op_test_dict['test_div'] = int(test[-1])
+        monkey_test = turn[3][1].split()
+        op_test_dict['test_div'] = int(monkey_test[-1])
 
         true_throw = turn[4][1].split()
         op_test_dict['true_throw'] = int(true_throw[-1])
@@ -134,7 +148,7 @@ def main(test=False):
 
 
 if __name__ == '__main__':
-    test = False
+    test = True
     t1 = time.perf_counter()
     main(test)
     t2 = time.perf_counter()
